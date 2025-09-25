@@ -93,8 +93,15 @@ const ShopContextProvider = (props) =>{
    }
    const getCartAmount = () =>{
     let totalAmount = 0;
+    if(!products ||  products.length === 0){
+        return totalAmount
+    } 
     for(const itemId in cartItems){
-        let cartInfo = products.find((proudct) => proudct._id === itemId);
+        let cartInfo =products.find((proudct) => String(proudct._id) === String(itemId));
+         if (!cartInfo) {
+      console.warn("Product not found for itemId:", itemId);
+      continue;
+    }
        try {
          for(const size in cartItems[itemId]){
             totalAmount += cartInfo.price* cartItems[itemId][size]
