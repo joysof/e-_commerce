@@ -41,14 +41,33 @@ const placeOrderStripe = () =>{
 const placeOrderRazorpay = () =>{
 
 }
-// all order data for admin panel
 
-const  userOrder= () =>{
+// user order product 
+
+const  userOrder= async (req,res) =>{
+  try {
+    const { userId } = req.body;
+    if (!userId) {
+      return res.status(400).json({ success: false, message: "User ID is required" });
+    }
+    const order = await orderModel.find({userId})
+    res.json({success : true ,order})
+  } catch (error) {
+    console.log(error)
+    res.json({success : false , message : error.message})
+  }
 
 }
-// user order data  for frontend
+// addmin all product list
 
-const allOrders= () =>{
+const allOrders= async (req,res) =>{
+  try {
+    const orders = await orderModel.find({})
+    res.json({success : true , orders})
+  } catch (error) {
+    console.log(error)
+    res.json({success : false, message : error.message})
+  }
 
 }
 
@@ -57,8 +76,16 @@ const allOrders= () =>{
 
 //update order status for admin panel
 
-const updateStatus= () =>{
+const updateStatus= async (req,res) =>{
+  try {
+    const {orderId , status} = req.body
 
+    await orderModel.findByIdAndUpdate(orderId , {status})
+    res.json({success :true , message: "status updated"})
+  } catch (error) {
+     console.log(error)
+    res.json({success : false, message : error.message})
+  }
 }
 
 
