@@ -1,6 +1,6 @@
 import React, { useContext, useEffect, useState } from 'react'
 import Title from '../components/Title'
-import { products } from '../assets/assets'
+// import { products } from '../assets/assets'
 import { ShopContext } from '../context/CreateContext.jsx'
 import axios from 'axios'
 import { toast } from 'react-toastify'
@@ -16,7 +16,7 @@ const Orders = () => {
       }
       const response = await axios.post(backendUrl + 'api/order/userorders' ,{} ,{headers : {token}})
       console.log(response.data)
-       if (response.data.success) {
+      if (response.data.success) {
       let allOrdersItem = []
       response.data.order.map((order) =>{
         order.items.map((item) =>{
@@ -84,7 +84,7 @@ const Orders = () => {
             </div>
             
               <button onClick={loadOrderData} className=' capitalize border px-4 py-2 text-sm' >track order</button>
-           
+          
           </div>
         ))}
       </div>
