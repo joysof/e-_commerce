@@ -6,7 +6,7 @@ import axios from 'axios'
 import { toast } from 'react-toastify'
 const Orders = () => {
   const {backendUrl, token, currency } = useContext(ShopContext)
-
+  const [status ,setStatus]= useState('')
   const [orderData , setOrderData] =useState([])
 
   const loadOrderData = async ()=>{
@@ -36,33 +36,6 @@ const Orders = () => {
     }
   }
 
-
-    const trackOrder = async (item) => {
-    try {
-      const response = await axios.post(
-        backendUrl + 'api/order/trackorder',
-        { orderId: item.orderId },
-        { headers: { token } }
-      )
-
-      if (response.data.success) {
-        
-        setOrderData((prev) =>
-          prev.map((it) =>
-            it.orderId === item.orderId
-              ? { ...it, status: response.data.status }
-              : it
-          )
-        )
-        toast.success('Order status updated!')
-      } else {
-        toast.error(response.data.message || 'Failed to update order status')
-      }
-    } catch (error) {
-      console.log(error)
-      toast.error(error.message)
-    }
-  }
   useEffect(() =>{
     loadOrderData()
   },[token])
@@ -107,7 +80,7 @@ const Orders = () => {
               </div>
             </div>
             
-              <button onClick={()=>trackOrder(item)} className=' capitalize border px-4 py-2 text-sm' >track order</button>
+              <button onClick={loadOrderData} className=' capitalize border px-4 py-2 text-sm' >track order</button>
           
           </div>
         ))}

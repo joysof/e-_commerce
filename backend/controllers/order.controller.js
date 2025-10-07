@@ -119,9 +119,7 @@ const verifyStripe = async (req,res) =>{
     console.log("error")
   }
 }
-// placing order using Razorpay method
 
-const placeOrderRazorpay = () => {}
 
 // user order product
 
@@ -145,24 +143,12 @@ const userOrder = async (req, res) => {
 // backend/routes/orderRoutes.js
 const trackProdct =  async (req, res) => {
   try {
-    const { orderId } = req.body
-    const order = await orderModel.findById(orderId)
-    if (!order) return res.json({ success: false, message: 'Order not found' })
-
-    const newStatus =
-      order.status === 'Processing'
-        ? 'Shipped'
-        : order.status === 'Shipped'
-        ? 'Delivered'
-        : 'Processing'
-
-    order.status = newStatus
-    await order.save()
-
-    res.json({ success: true, status: newStatus })
+    const order = await orderModel.findById(req.params.id)
+    res.json(order)
   } catch (error) {
-    res.json({ success: false, message: error.message })
+    res.json({message : "something went wrong"})
   }
+ 
 }
 
 // addmin all product list
@@ -196,7 +182,6 @@ const updateStatus = async (req, res) => {
 export {
   placeOrder,
   placeOrderStripe,
-  placeOrderRazorpay,
   userOrder,
   allOrders,
   updateStatus,

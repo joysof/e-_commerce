@@ -16,7 +16,7 @@ const Orders = ({ token }) => {
         { headers: { token } }
       )
       if (response.data.success) {
-        setOrders(response.data.orders)
+        setOrders(response.data.orders.reverse())
       } else {
         toast.error(response.data.message)
       }
@@ -68,13 +68,17 @@ const Orders = ({ token }) => {
               key={index}
               className="grid grid-cols-1 sm:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] lg:grid-cols-[0.5fr_2fr_1fr_1fr_1fr] gap-3 items-start border-2 border-gray-200 p-5 md:p-8 my-3 md:my-4 text-xs sm:text-sm text-gray-700"
             >
-              <img className="w-12" src={assets.parcel_icon} alt="" />
+              {order.items?.map((item, index) =>(
+                
+                <img key={index}  src={item.image ? item.image[0] : ''}/>
+        ))}
 
               <div>
                 <div>
                   {order.items?.map((item, index) => {
                     if (index === order.items.length - 1 ? ',' : '') {
                       return (
+                        
                         <p key={index} className="py-0.5">
                           {item.name} x {item.quantity} <span>{item.size}</span>
                         </p>
