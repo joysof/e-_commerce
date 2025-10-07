@@ -96,15 +96,27 @@ const verifyStripe = async (req,res) =>{
   const {orderId , success , userId} = req.body;
   try {
     if (success === 'true') {
+      
+
       await orderModel.findByIdAndUpdate(orderId , {payment : true})
       await userModel.findByIdAndUpdate(userId , {cartData: {}})
+       return res.status(200).json({
+        success: true,
+        message: "Payment verified successfully!",
+        orderId
+      })
     }else{
       await orderModel.findByIdAndDelete(orderId)
-      res.json({success : false})
+       return res.status(400).json({
+        success: false,
+        message: "Payment verification failed"
+      })
+     
     }
   } catch (error) {
     console.log(error)
     res.json({success :false , message:error.message})
+    console.log("error")
   }
 }
 // placing order using Razorpay method
