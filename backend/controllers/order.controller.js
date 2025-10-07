@@ -128,6 +128,31 @@ const userOrder = async (req, res) => {
     res.json({ success: false, message: error.message })
   }
 }
+
+// track single product 
+// backend/routes/orderRoutes.js
+const trackProdct =  async (req, res) => {
+  try {
+    const { orderId } = req.body
+    const order = await orderModel.findById(orderId)
+    if (!order) return res.json({ success: false, message: 'Order not found' })
+
+    const newStatus =
+      order.status === 'Processing'
+        ? 'Shipped'
+        : order.status === 'Shipped'
+        ? 'Delivered'
+        : 'Processing'
+
+    order.status = newStatus
+    await order.save()
+
+    res.json({ success: true, status: newStatus })
+  } catch (error) {
+    res.json({ success: false, message: error.message })
+  }
+}
+
 // addmin all product list
 
 const allOrders = async (req, res) => {
@@ -163,5 +188,6 @@ export {
   userOrder,
   allOrders,
   updateStatus,
-  verifyStripe
+  verifyStripe,
+  trackProdct
 }

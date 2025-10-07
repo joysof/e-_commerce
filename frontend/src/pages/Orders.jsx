@@ -15,7 +15,6 @@ const Orders = () => {
         return null
       }
       const response = await axios.post(backendUrl + 'api/order/userorders' ,{} ,{headers : {token}})
-      console.log(response.data)
       if (response.data.success) {
       let allOrdersItem = []
       response.data.order.map((order) =>{
@@ -24,11 +23,11 @@ const Orders = () => {
           item['payment'] = order.payment
           item['paymentMethod'] = order.paymentMethod
           item['date'] = order.date
+          item['orderId'] = order._id 
+
           allOrdersItem.push(item)
         })
       })       
-
-      console.log(orderData)
       setOrderData(allOrdersItem)
     }
     } catch (error) {
@@ -37,11 +36,36 @@ const Orders = () => {
     }
   }
 
+
+    const trackOrder = async (item) => {
+    try {
+      const response = await axios.post(
+        backendUrl + 'api/order/trackorder',
+        { orderId: item.orderId },
+        { headers: { token } }
+      )
+
+      if (response.data.success) {
+        
+        setOrderData((prev) =>
+          prev.map((it) =>
+            it.orderId === item.orderId
+              ? { ...it, status: response.data.status }
+              : it
+          )
+        )
+        toast.success('Order status updated!')
+      } else {
+        toast.error(response.data.message || 'Failed to update order status')
+      }
+    } catch (error) {
+      console.log(error)
+      toast.error(error.message)
+    }
+  }
   useEffect(() =>{
     loadOrderData()
   },[token])
-
-
 
 
 
@@ -65,7 +89,7 @@ const Orders = () => {
                     {currency}
                     {item.price}
                   </p>
-                  <p>Quantity : {item.quantity}{console.log(item)}</p>
+                  <p>Quantity : {item.quantity}</p>
                   <p>Size : {item.size}</p>
                 </div>
                 <p>
@@ -83,7 +107,7 @@ const Orders = () => {
               </div>
             </div>
             
-              <button onClick={loadOrderData} className=' capitalize border px-4 py-2 text-sm' >track order</button>
+              <button onClick={()=>trackOrder(item)} className=' capitalize border px-4 py-2 text-sm' >track order</button>
           
           </div>
         ))}
